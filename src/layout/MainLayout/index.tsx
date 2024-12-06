@@ -1,18 +1,21 @@
-import React, { Children } from "react";
+import React, { FC } from "react";
 import HeaderComponent from "../../components/HeaderComponent";
 import SideBarComponent from "../../components/SideBar";
-import './styles.scss';
-import {Outlet} from 'react-router-dom';
+import "./styles.scss";
+import { Outlet } from "react-router-dom";
 
-const MainLayout = () => {
+const MainLayout: FC = () => {
   return (
     <div className="main-layout-container">
       <HeaderComponent />
       <div className="main-layout-container__content">
-        <SideBarComponent></SideBarComponent>
-        <Outlet></Outlet>
+        <SideBarComponent />
+        <div className="right-side">
+          <Outlet />
+        </div>
       </div>
     </div>
-  )
+  );
 };
+
 export default MainLayout;

@@ -1,0 +1,35 @@
+.task-container {
+  border: 2px solid black;
+  border-radius: 10px;
+  width: 250px;
+  display: flex;
+  flex-direction: column;
+  row-gap: 5px;
+  padding: 10px;
+
+  &__divider {
+    border-bottom: 2px solid black;
+  }
+  &__title {
+    font-weight: 700;
+    cursor: pointer;
+
+    &:hover {
+      color: rgb(94, 94, 207);
+    }
+  }
+  &__status {
+    color: green;
+    font-weight: 700;
+  }
+  &__des-title {
+    font-weight: 700;
+  }
+  &__des-content {
+    height: 50px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+  }
+}

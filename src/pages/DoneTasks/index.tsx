@@ -1,9 +1,7 @@
-import React from "react";
+import React, { FC } from "react";
 
-const DoneTasks = () => {
-    return (
-        <div>done task</div>
-    )
-}
+const DoneTasks: FC = () => {
+  return <div>Done tasks</div>;
+};
 
 export default DoneTasks;
