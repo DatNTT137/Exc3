@@ -7,12 +7,14 @@ interface Task {
   completed: boolean;
 }
 
-type TaskUpdate = Partial<Task>; 
+type TaskUpdate = Partial<Task>;
 
 export const TaskAPIs = {
   getAllTasks: async (): Promise<AxiosResponse<Task[]>> => {
     try {
-      const response = await axios.get<Task[]>(`${process.env.REACT_APP_BE_URL}tasks`);
+      const response = await axios.get<Task[]>(
+        `${process.env.REACT_APP_BE_URL}tasks`
+      );
       return response;
     } catch (error) {
       console.error("Error fetching all tasks:", error);
@@ -45,7 +47,10 @@ export const TaskAPIs = {
     }
   },
 
-  updateTaskById: async (id: string, taskUpdate: TaskUpdate): Promise<AxiosResponse<Task>> => {
+  updateTaskById: async (
+    id: string,
+    taskUpdate: TaskUpdate
+  ): Promise<AxiosResponse<Task>> => {
     try {
       const response = await axios.put<Task>(
         `${process.env.REACT_APP_BE_URL}tasks/${id}`,

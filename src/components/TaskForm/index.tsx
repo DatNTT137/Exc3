@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Input, Radio, Modal } from "antd";
 import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
@@ -14,6 +14,7 @@ import { TASK_STATUS } from "../../constants/task.constants";
 import { AppDispatch } from "../../redux/store";
 import { v4 as uuidv4 } from "uuid";
 import Task from "../Task";
+import './styles.scss'
 
 const schema = Yup.object().shape({
   title: Yup.string().required("Please input title"),
@@ -45,7 +46,7 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
       title: "",
       creator: "",
       createdat: new Date(),
-      status: TASK_STATUS.NEW,
+      status: TASK_STATUS.NEW,  // Mặc định là NEW khi tạo mới
       description: "",
     },
     resolver: yupResolver(schema),
@@ -57,6 +58,8 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
     formState: { errors },
     reset,
   } = methods;
+
+  const [isEditing, setIsEditing] = useState<boolean>(false); // Điều khiển trạng thái chỉnh sửa
 
   const onValid = (formValue: TaskFormData) => {
     const task = {
@@ -92,6 +95,7 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
         status: currentTask.status as "NEW" | "DOING" | "DONE",
         createdat: currentTask.createdat || new Date(),
       });
+      setIsEditing(true); // Khi chỉnh sửa, cho phép hiển thị radio
     }
   }, [isEdit, currentTask, reset]);
 
@@ -111,17 +115,20 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
       />
       {errors.creator && <p>{errors.creator?.message}</p>}
 
-      <Controller
-        name="status"
-        control={control}
-        render={({ field }) => (
-          <Radio.Group {...field}>
-            <Radio value="NEW">New</Radio>
-            <Radio value="DOING">Doing</Radio>
-            <Radio value="DONE">Done</Radio>
-          </Radio.Group>
-        )}
-      />
+      {/* Chỉ hiển thị radio khi chỉnh sửa */}
+      {isEditing && (
+        <Controller
+          name="status"
+          control={control}
+          render={({ field }) => (
+            <Radio.Group {...field}>
+              <Radio value="NEW">New</Radio>
+              <Radio value="DOING">Doing</Radio>
+              <Radio value="DONE">Done</Radio>
+            </Radio.Group>
+          )}
+        />
+      )}
       {errors.status && <p>{errors.status?.message}</p>}
 
       <Controller
@@ -137,12 +144,12 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
         name="createdat"
         control={control}
         render={({ field }) => {
-          const value = field.value ? new Date(field.value) : new Date(); // Đảm bảo là đối tượng Date
+          const value = field.value ? new Date(field.value) : new Date(); 
           return (
             <Input
               {...field}
               type="date"
-              value={value.toISOString().split("T")[0]} // Đảm bảo giá trị là chuỗi hợp lệ
+              value={value.toISOString().split("T")[0]} 
             />
           );
         }}

@@ -9,7 +9,7 @@ interface Task {
   creator: string;
   status: "NEW" | "DOING" | "DONE";
   description: string;
-  createdat: Date; 
+  createdat: Date;
 }
 
 interface TaskProps {
@@ -36,9 +36,7 @@ const Task: FC<TaskProps> = ({ task }) => {
       <div className="task-container__divider"></div>
       <div className="task-container__description">
         <div className="task-container__des-title">Description:</div>
-        <div className="task-container__des-content">
-          {task.description}
-        </div>
+        <div className="task-container__des-content">{task.description}</div>
       </div>
     </div>
   );
