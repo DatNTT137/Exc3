@@ -1,51 +1,50 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import Task from "../../../components/Task";
 
-const API_URL = "http://localhost:4000/tasks";  
+const API_URL = "http://localhost:4000/tasks";
 
-// Fetch all tasks
+// Lấy tất cả task
 export const actfetchAllTask = createAsyncThunk("task/fetchAllTask", async () => {
-  const response = await axios.get(API_URL);  
+  const response = await axios.get(API_URL);
   return response.data;
 });
 
-// Fetch task by ID
+// Lấy task theo ID
 export const actFetchById = createAsyncThunk("task/fetchById", async (id: string) => {
-  const response = await axios.get(`${API_URL}/${id}`); 
+  const response = await axios.get(`${API_URL}/${id}`);
   return response.data;
 });
 
-// Create new task
-export const actCreateNewTask = createAsyncThunk("task/createNewTask", async (task: Task) => {
-  const response = await axios.post(API_URL, task);  
+// Tạo task mới
+export const actCreateNewTask = createAsyncThunk("task/createNewTask", async (task: any) => {
+  const response = await axios.post(API_URL, task);
   return response.data;
 });
 
-// Delete task by ID
+// Xóa task theo ID
 export const actDeleteTaskById = createAsyncThunk("task/deleteById", async (id: string) => {
-  await axios.delete(`${API_URL}/${id}`);  
+  await axios.delete(`${API_URL}/${id}`);
   return id;
 });
 
-// Update task
-export const actUpdateTask = createAsyncThunk("task/updateTask", async (task: Task) => {
-  const response = await axios.put(`${API_URL}/${task.id}`, task);  
+// Cập nhật task
+export const actUpdateTask = createAsyncThunk("task/updateTask", async (task: any) => {
+  const response = await axios.put(`${API_URL}/${task.id}`, task);
   return response.data;
 });
 
 interface TaskState {
-  tasks: Task[];
+  tasks: any[];
   isLoading: boolean;
-  currentTask: Task | null;
-  filteredTasks: Task[]; // State for filtered tasks
+  currentTask: any | null;
+  filteredTasks: any[]; // State cho task đã lọc
 }
 
 const initialState: TaskState = {
   tasks: [],
   isLoading: false,
   currentTask: null,
-  filteredTasks: [], // Initialize filtered tasks
+  filteredTasks: [],
 };
 
 const taskSlice = createSlice({
@@ -53,28 +52,31 @@ const taskSlice = createSlice({
   initialState,
   reducers: {
     filterTasksByStatus: (state, action) => {
-      const status = action.payload;  // Payload contains the status to filter by
+      const status = action.payload;
       state.filteredTasks = state.tasks.filter((task) => task.status === status);
     },
   },
   extraReducers: (builder) => {
     builder
-      // Fetch all tasks
-      .addCase(actfetchAllTask.fulfilled, (state, action) => {
-        state.tasks = action.payload;
-        state.filteredTasks = action.payload; // Show all tasks by default
+      .addCase(actfetchAllTask.pending, (state) => {
+        state.isLoading = true;
       })
-      // Create new task
+      .addCase(actfetchAllTask.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.tasks = action.payload;
+        state.filteredTasks = action.payload; // Mặc định hiển thị tất cả tasks
+      })
+      .addCase(actfetchAllTask.rejected, (state) => {
+        state.isLoading = false;
+      })
       .addCase(actCreateNewTask.fulfilled, (state, action) => {
         state.tasks.push(action.payload);
-        state.filteredTasks.push(action.payload); // Add to filtered list as well
+        state.filteredTasks.push(action.payload); // Thêm task vào danh sách đã lọc
       })
-      // Delete task by ID
       .addCase(actDeleteTaskById.fulfilled, (state, action) => {
         state.tasks = state.tasks.filter((task) => task.id !== action.payload);
         state.filteredTasks = state.filteredTasks.filter((task) => task.id !== action.payload);
       })
-      // Update task
       .addCase(actUpdateTask.fulfilled, (state, action) => {
         state.tasks = state.tasks.map((task) =>
           task.id === action.payload.id ? action.payload : task
@@ -87,5 +89,4 @@ const taskSlice = createSlice({
 });
 
 export const { filterTasksByStatus } = taskSlice.actions;
-
 export default taskSlice.reducer;

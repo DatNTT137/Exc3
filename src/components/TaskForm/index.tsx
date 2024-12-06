@@ -95,17 +95,7 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({ isEdit =
       />
       {errors.creator && <p>{errors.creator?.message}</p>}
 
-      <Controller
-        name="status"
-        control={control}
-        render={({ field }) => (
-          <Radio.Group {...field}>
-            <Radio value="NEW">New</Radio>
-            <Radio value="DOING">Doing</Radio>
-            <Radio value="DONE">Done</Radio>
-          </Radio.Group>
-        )}
-      />
+      
       {errors.status && <p>{errors.status?.message}</p>}
 
       <Controller
@@ -121,6 +111,18 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({ isEdit =
         render={({ field }) => <Input {...field} type="date" value={field.value ? field.value.toISOString().split("T")[0] : ""} />}
       />
       {errors.createdat && <p>{errors.createdat?.message}</p>}
+
+      <Controller
+        name="status"
+        control={control}
+        render={({ field }) => (
+          <Radio.Group {...field}>
+            <Radio value="NEW">New</Radio>
+            <Radio value="DOING">Doing</Radio>
+            <Radio value="DONE">Done</Radio>
+          </Radio.Group>
+        )}
+      />
 
       <Button type="primary" htmlType="submit">
         {isEdit ? "Update" : "Save"}
