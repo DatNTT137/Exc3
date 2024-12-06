@@ -17,8 +17,17 @@ const HeaderComponent: FC = () => {
   };
 
   const handleSearchButton = (): void => {
-   
-    console.log("Searching for: ", search);
+    const searchTerm = search.trim().toUpperCase();  
+
+    if (searchTerm === "NEW") {
+      navigate("/new-task");
+    } else if (searchTerm === "DOING") {
+      navigate("/doing-task");
+    } else if (searchTerm === "DONE") {
+      navigate("/done-task");
+    } else {
+      alert("Invalid status. Please enter 'NEW', 'DOING', or 'DONE'.");
+    }
   };
 
   return (
@@ -28,7 +37,7 @@ const HeaderComponent: FC = () => {
         <Input
           value={search}
           onChange={handleSearch}
-          placeholder="Search tasks"
+          placeholder="Search by status (NEW, DOING, DONE)"
         />
         <Button onClick={handleSearchButton}>Search</Button>
       </div>

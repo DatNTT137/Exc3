@@ -26,7 +26,7 @@ const UpdateTask: React.FC = () => {
   // Nếu task đã có, hiển thị form để chỉnh sửa
   return (
     <div>
-      <TaskForm isEdit={true} currentTask={task} /> {/* Truyền task vào form */}
+      <TaskForm isEdit={true} currentTask={task} /> 
     </div>
   );
 };

@@ -84,6 +84,11 @@ const taskSlice = createSlice({
         state.filteredTasks = state.filteredTasks.map((task) =>
           task.id === action.payload.id ? action.payload : task
         );
+      })
+      // Fetch task theo ID và lưu vào currentTask
+      .addCase(actFetchById.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.currentTask = action.payload; // Lưu task vào currentTask khi fetch theo ID
       });
   },
 });

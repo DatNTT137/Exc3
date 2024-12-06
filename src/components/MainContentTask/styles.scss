@@ -1,6 +1,31 @@
-.main-content-task{
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    
+.main-content-task {
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.task-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  width: 100%;
+}
+
+.pagination-container {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.pagination {
+  .ant-pagination-item {
+    border-radius: 50%;
+  }
+
+  .ant-pagination-next,
+  .ant-pagination-prev {
+    padding: 5px 10px;
+    font-size: 16px;
+  }
 }

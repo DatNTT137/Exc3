@@ -1,0 +1,28 @@
+.tasks-container {
+    padding: 20px;
+  }
+  
+  .task-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px; /* Add space between tasks */
+  }
+  
+  .pagination-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  /* Customize Task Component styling if needed */
+  .task-container {
+    width: calc(33.33% - 20px); /* Adjust the width for better spacing */
+    box-sizing: border-box;
+  }
+  
+  /* Optional: Add hover effect for tasks */
+  .task-container:hover {
+    transform: scale(1.05);
+    transition: transform 0.3s;
+  }
+  

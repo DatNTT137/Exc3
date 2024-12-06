@@ -12,7 +12,6 @@ interface Task {
   createdat: Date; 
 }
 
-
 interface TaskProps {
   task: Task;
 }

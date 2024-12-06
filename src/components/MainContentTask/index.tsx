@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import Task from "../Task";
 import { Pagination } from "antd";
+import './styles.scss'
 
 interface Tasks {
   id: string;
@@ -23,13 +24,18 @@ const MainContentTask: FC<MainContentTaskProps> = ({ tasks, onPageChange, totalT
 
   return (
     <div className="main-content-task">
-      {renderTask(tasks)}
-      <Pagination
-        total={totalTasks}
-        pageSize={12}
-        onChange={onPageChange}
-        showSizeChanger={false}
-      />
+      <div className="task-list">
+        {renderTask(tasks)}
+      </div>
+      <div className="pagination-container">
+        <Pagination
+          total={totalTasks}
+          pageSize={12}
+          onChange={onPageChange}
+          showSizeChanger={false}
+          className="pagination"
+        />
+      </div>
     </div>
   );
 };

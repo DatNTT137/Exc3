@@ -4,18 +4,23 @@ import { Controller, useForm } from "react-hook-form";
 import * as Yup from "yup";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { useDispatch } from "react-redux";
-import { actDeleteTaskById, actCreateNewTask, actUpdateTask } from "../../redux/features/tasks/taskSlice";
+import {
+  actDeleteTaskById,
+  actCreateNewTask,
+  actUpdateTask,
+} from "../../redux/features/tasks/taskSlice";
 import { useNavigate } from "react-router-dom";
 import { TASK_STATUS } from "../../constants/task.constants";
 import { AppDispatch } from "../../redux/store";
 import { v4 as uuidv4 } from "uuid";
 import Task from "../Task";
 
-
 const schema = Yup.object().shape({
   title: Yup.string().required("Please input title"),
   creator: Yup.string().required("Please input creator"),
-  status: Yup.string().oneOf(["NEW", "DOING", "DONE"] as const).required("Status is required"),
+  status: Yup.string()
+    .oneOf(["NEW", "DOING", "DONE"] as const)
+    .required("Status is required"),
   description: Yup.string().required("Please input description"),
   createdat: Yup.date().required("Created at is required"),
 });
@@ -28,7 +33,10 @@ interface TaskFormData {
   createdat: Date;
 }
 
-const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({ isEdit = false, currentTask }) => {
+const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
+  isEdit = false,
+  currentTask,
+}) => {
   const dispatch = useDispatch<AppDispatch>();
   const navigate = useNavigate();
 
@@ -43,16 +51,24 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({ isEdit =
     resolver: yupResolver(schema),
   });
 
-  const { handleSubmit, control, formState: { errors }, reset } = methods;
+  const {
+    handleSubmit,
+    control,
+    formState: { errors },
+    reset,
+  } = methods;
 
   const onValid = (formValue: TaskFormData) => {
-    const task = { ...formValue, id: isEdit ? currentTask?.id || uuidv4() : uuidv4() };
+    const task = {
+      ...formValue,
+      id: isEdit ? currentTask?.id || uuidv4() : uuidv4(),
+    };
     if (isEdit) {
       if (task.id) {
-        dispatch(actUpdateTask(task)); 
+        dispatch(actUpdateTask(task)); // Cập nhật task khi chỉnh sửa
       }
     } else {
-      dispatch(actCreateNewTask(task)); 
+      dispatch(actCreateNewTask(task)); // Tạo task mới
     }
     navigate("/all-task");
   };
@@ -73,7 +89,7 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({ isEdit =
     if (isEdit && currentTask) {
       reset({
         ...currentTask,
-        status: currentTask.status as "NEW" | "DOING" | "DONE", 
+        status: currentTask.status as "NEW" | "DOING" | "DONE",
         createdat: currentTask.createdat || new Date(),
       });
     }
@@ -95,23 +111,6 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({ isEdit =
       />
       {errors.creator && <p>{errors.creator?.message}</p>}
 
-      
-      {errors.status && <p>{errors.status?.message}</p>}
-
-      <Controller
-        name="description"
-        control={control}
-        render={({ field }) => <Input.TextArea {...field} placeholder="Description" />}
-      />
-      {errors.description && <p>{errors.description?.message}</p>}
-
-      <Controller
-        name="createdat"
-        control={control}
-        render={({ field }) => <Input {...field} type="date" value={field.value ? field.value.toISOString().split("T")[0] : ""} />}
-      />
-      {errors.createdat && <p>{errors.createdat?.message}</p>}
-
       <Controller
         name="status"
         control={control}
@@ -123,6 +122,33 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({ isEdit =
           </Radio.Group>
         )}
       />
+      {errors.status && <p>{errors.status?.message}</p>}
+
+      <Controller
+        name="description"
+        control={control}
+        render={({ field }) => (
+          <Input.TextArea {...field} placeholder="Description" />
+        )}
+      />
+      {errors.description && <p>{errors.description?.message}</p>}
+
+      <Controller
+        name="createdat"
+        control={control}
+        render={({ field }) => {
+          const value = field.value ? new Date(field.value) : new Date(); // Đảm bảo là đối tượng Date
+          return (
+            <Input
+              {...field}
+              type="date"
+              value={value.toISOString().split("T")[0]} // Đảm bảo giá trị là chuỗi hợp lệ
+            />
+          );
+        }}
+      />
+
+      {errors.createdat && <p>{errors.createdat?.message}</p>}
 
       <Button type="primary" htmlType="submit">
         {isEdit ? "Update" : "Save"}
