@@ -1,24 +1,64 @@
-.task-form-wrapper {
+.form-container {
   display: flex;
   justify-content: center;
+  height: 70vh;
+  padding: 20px;
+}
+
+.form {
   width: 100%;
+  max-width: 500px;
+  background-color: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
 
-  .task-form-container {
-    width: 400px;
-    display: flex;
-    flex-direction: column;
-    row-gap: 5px;
-  }
-  .task-form {
-    display: flex;
+.form h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
 
-    &__label {
-      min-width: 110px;
-    }
-  }
-  .task-form-btn {
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-  }
+.form .ant-input,
+.form .ant-input-textarea {
+  width: 100%;
+  margin-bottom: 16px;
+}
+
+.form .ant-btn {
+  width: 100%;
+  margin-top: 10px;
+  font-weight: bold;
+}
+
+.form .ant-btn-primary {
+  background-color: #1890ff;
+  border-color: #1890ff;
+}
+
+.form .ant-btn-default {
+  background-color: #f0f0f0;
+  border-color: #d9d9d9;
+}
+
+.form .ant-btn-danger {
+  background-color: #ff4d4f;
+  border-color: #ff4d4f;
+}
+
+.form .error-message {
+  color: red;
+  font-size: 12px;
+  margin-top: -10px;
+  margin-bottom: 10px;
+}
+
+.form .radio-group {
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.form .radio-group .ant-radio-wrapper {
+  display: inline-block;
 }

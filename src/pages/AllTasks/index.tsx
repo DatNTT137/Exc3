@@ -5,12 +5,10 @@ import { actfetchAllTask } from "../../redux/features/tasks/taskSlice";
 import { AppDispatch, RootState } from "../../redux/store";
 import { Spin } from "antd";
 
-
 const AllTasks: React.FC = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { isLoading, tasks } = useSelector((state: RootState) => state.task);
   const [currentPage, setCurrentPage] = useState(1);
-  
 
   useEffect(() => {
     dispatch(actfetchAllTask());
@@ -31,6 +29,7 @@ const AllTasks: React.FC = () => {
       ) : (
         <MainContentTask
           tasks={tasks}
+          currentPage={currentPage}
           onPageChange={handlePageChange}
           totalTasks={tasks.length}
         />

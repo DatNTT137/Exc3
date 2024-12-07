@@ -13,8 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { TASK_STATUS } from "../../constants/task.constants";
 import { AppDispatch } from "../../redux/store";
 import { v4 as uuidv4 } from "uuid";
-import Task from "../Task";
-import './styles.scss'
+import "./styles.scss";
 
 const schema = Yup.object().shape({
   title: Yup.string().required("Please input title"),
@@ -34,7 +33,7 @@ interface TaskFormData {
   createdat: Date;
 }
 
-const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
+const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: any }> = ({
   isEdit = false,
   currentTask,
 }) => {
@@ -46,7 +45,7 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
       title: "",
       creator: "",
       createdat: new Date(),
-      status: TASK_STATUS.NEW,  // Mặc định là NEW khi tạo mới
+      status: TASK_STATUS.NEW,
       description: "",
     },
     resolver: yupResolver(schema),
@@ -59,7 +58,7 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
     reset,
   } = methods;
 
-  const [isEditing, setIsEditing] = useState<boolean>(false); // Điều khiển trạng thái chỉnh sửa
+  const [isEditing, setIsEditing] = useState<boolean>(false);
 
   const onValid = (formValue: TaskFormData) => {
     const task = {
@@ -68,10 +67,10 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
     };
     if (isEdit) {
       if (task.id) {
-        dispatch(actUpdateTask(task)); // Cập nhật task khi chỉnh sửa
+        dispatch(actUpdateTask(task));
       }
     } else {
-      dispatch(actCreateNewTask(task)); // Tạo task mới
+      dispatch(actCreateNewTask(task));
     }
     navigate("/all-task");
   };
@@ -95,83 +94,95 @@ const TaskForm: React.FC<{ isEdit?: boolean; currentTask?: Task }> = ({
         status: currentTask.status as "NEW" | "DOING" | "DONE",
         createdat: currentTask.createdat || new Date(),
       });
-      setIsEditing(true); // Khi chỉnh sửa, cho phép hiển thị radio
+      setIsEditing(true);
     }
   }, [isEdit, currentTask, reset]);
 
   return (
-    <form onSubmit={handleSubmit(onValid)}>
-      <Controller
-        name="title"
-        control={control}
-        render={({ field }) => <Input {...field} placeholder="Title" />}
-      />
-      {errors.title && <p>{errors.title?.message}</p>}
+    <div className="form-container">
+      <form className="form" onSubmit={handleSubmit(onValid)}>
+        <h2>{isEdit ? "Edit Task" : "Create New Task"}</h2>
 
-      <Controller
-        name="creator"
-        control={control}
-        render={({ field }) => <Input {...field} placeholder="Creator" />}
-      />
-      {errors.creator && <p>{errors.creator?.message}</p>}
-
-      {/* Chỉ hiển thị radio khi chỉnh sửa */}
-      {isEditing && (
         <Controller
-          name="status"
+          name="title"
+          control={control}
+          render={({ field }) => <Input {...field} placeholder="Title" />}
+        />
+        {errors.title && (
+          <p className="error-message">{errors.title?.message}</p>
+        )}
+
+        <Controller
+          name="creator"
+          control={control}
+          render={({ field }) => <Input {...field} placeholder="Creator" />}
+        />
+        {errors.creator && (
+          <p className="error-message">{errors.creator?.message}</p>
+        )}
+
+        {isEditing && (
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <Radio.Group {...field} className="radio-group">
+                <Radio value="NEW">New</Radio>
+                <Radio value="DOING">Doing</Radio>
+                <Radio value="DONE">Done</Radio>
+              </Radio.Group>
+            )}
+          />
+        )}
+        {errors.status && (
+          <p className="error-message">{errors.status?.message}</p>
+        )}
+
+        <Controller
+          name="description"
           control={control}
           render={({ field }) => (
-            <Radio.Group {...field}>
-              <Radio value="NEW">New</Radio>
-              <Radio value="DOING">Doing</Radio>
-              <Radio value="DONE">Done</Radio>
-            </Radio.Group>
+            <Input.TextArea {...field} placeholder="Description" />
           )}
         />
-      )}
-      {errors.status && <p>{errors.status?.message}</p>}
-
-      <Controller
-        name="description"
-        control={control}
-        render={({ field }) => (
-          <Input.TextArea {...field} placeholder="Description" />
+        {errors.description && (
+          <p className="error-message">{errors.description?.message}</p>
         )}
-      />
-      {errors.description && <p>{errors.description?.message}</p>}
 
-      <Controller
-        name="createdat"
-        control={control}
-        render={({ field }) => {
-          const value = field.value ? new Date(field.value) : new Date(); 
-          return (
-            <Input
-              {...field}
-              type="date"
-              value={value.toISOString().split("T")[0]} 
-            />
-          );
-        }}
-      />
+        <Controller
+          name="createdat"
+          control={control}
+          render={({ field }) => {
+            const value = field.value ? new Date(field.value) : new Date();
+            return (
+              <Input
+                {...field}
+                type="date"
+                value={value.toISOString().split("T")[0]}
+              />
+            );
+          }}
+        />
+        {errors.createdat && (
+          <p className="error-message">{errors.createdat?.message}</p>
+        )}
 
-      {errors.createdat && <p>{errors.createdat?.message}</p>}
-
-      <Button type="primary" htmlType="submit">
-        {isEdit ? "Update" : "Save"}
-      </Button>
-      <Button type="default" onClick={() => reset()}>
-        Reset
-      </Button>
-      {isEdit && currentTask && (
-        <Button
-          style={{ backgroundColor: "red", color: "white" }}
-          onClick={handleDeleteTask}
-        >
-          Delete
+        <Button type="primary" htmlType="submit">
+          {isEdit ? "Update" : "Save"}
         </Button>
-      )}
-    </form>
+        <Button type="default" onClick={() => reset()}>
+          Reset
+        </Button>
+        {isEdit && currentTask && (
+          <Button
+            style={{ backgroundColor: "red", color: "white" }}
+            onClick={handleDeleteTask}
+          >
+            Delete
+          </Button>
+        )}
+      </form>
+    </div>
   );
 };
 
